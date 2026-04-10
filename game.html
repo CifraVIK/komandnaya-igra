@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>ЦИФРАВИК — Игра</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="game-container" style="position: relative; overflow: visible">
+      <!-- Логотип name.png - увеличен в 2 раза -->
+      <div class="header">
+        <img src="name.png" alt="ЦИФРАВИК" class="logo-game" />
+      </div>
+
+      <div class="team-info">
+        <div class="team-badge" id="teamNameDisplay"></div>
+        <div class="task-counter" id="taskCounter">Задание 1 из 5</div>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div id="gameContent"></div>
+
+      <!-- Стикер image2.png - УДАЛЁН по требованию -->
+    </div>
+
+    <!-- Модальное окно -->
+    <div id="modal" class="modal">
+      <div class="modal-content" style="position: relative">
+        <p id="modalMessage"></p>
+        <img id="modalSticker" class="modal-sticker" src="" alt="" />
+        <button id="modalBtn" class="btn"></button>
+      </div>
+    </div>
+
+    <script>
+      const questionsData = {
+        0: {
+          name: "Защитники паролей",
+          tasks: [
+            {
+              type: "single",
+              question: "Какой из этих паролей самый надёжный?",
+              options: ["123456", "Барсик", "Б@рс!к_23"],
+              correct: 2,
+            },
+            {
+              type: "single",
+              question:
+                "Что делать, если сайт просит придумать секретный вопрос для восстановления пароля?",
+              options: [
+                "Выбрать вопрос, ответ на который знают все друзья",
+                "Выбрать вопрос, ответ на который знаешь только ты",
+                "Выбрать вопрос «Какой твой любимый цвет?»",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question:
+                "Друг просит дать ему твой пароль от игры, чтобы пройти сложный уровень. Что ты сделаешь?",
+              options: [
+                "Дам пароль — он же друг",
+                "Скажу: «Не могу, пароль никому нельзя давать»",
+                "Напишу пароль на бумажке и отдам",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question:
+                "Верно ли утверждение: «В надёжном пароле должны быть буквы, цифры и символы»?",
+              options: ["Да", "Нет"],
+              correct: 0,
+            },
+            {
+              type: "multiple",
+              question: "Отметь все правильные правила защиты паролей:",
+              options: [
+                "Пароль должен знать только ты",
+                "Пароль можно сообщать друзьям",
+                "Хороший пароль содержит буквы, цифры и символы",
+                "Пароль 123456 — очень надёжный",
+                "Если пароль забыл, можно попросить новый у родителей",
+              ],
+              correct: [0, 2, 4],
+            },
+          ],
+        },
+        1: {
+          name: "Борцы с вирусами",
+          tasks: [
+            {
+              type: "single",
+              question: "Что может быть опасно для компьютера?",
+              options: [
+                "Файл с названием «подарок.exe» от незнакомца",
+                "Иконка антивируса",
+                "Папка «Мои рисунки»",
+              ],
+              correct: 0,
+            },
+            {
+              type: "single",
+              question: "Что такое антивирус?",
+              options: [
+                "Программа, которая защищает компьютер от вирусов",
+                "Игра, где нужно ловить вирусы",
+                "Вирус, который ломает компьютер",
+              ],
+              correct: 0,
+            },
+            {
+              type: "single",
+              question:
+                "Тебе пришло сообщение от незнакомца: «Нажми на ссылку и получи бесплатные скины для игры!» Что ты сделаешь?",
+              options: [
+                "Нажму на ссылку — хочу скины!",
+                "Спрошу у родителей, безопасно ли это",
+                "Отправлю ссылку другу, пусть он проверит",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question:
+                "Верно ли утверждение: «Нельзя открывать подозрительные ссылки»?",
+              options: ["Да", "Нет"],
+              correct: 0,
+            },
+            {
+              type: "multiple",
+              question: "Отметь правила, которые помогут не подхватить вирус:",
+              options: [
+                "Можно скачивать файлы с любых сайтов",
+                "Нельзя открывать подозрительные ссылки",
+                "На компьютере должен быть антивирус",
+                "Если пришло письмо от незнакомца с файлом — открой скорее",
+                "Обновлять программы нужно, когда просит антивирус",
+              ],
+              correct: [1, 2, 4],
+            },
+          ],
+        },
+        2: {
+          name: "Ловцы обманов",
+          tasks: [
+            {
+              type: "single",
+              question: "Какая новость выглядит как фейк (обман)?",
+              options: [
+                "«Завтра в школе отменяют уроки» (источник: неизвестный сайт)",
+                "«Во вторник будет контрольная по математике» (сообщила учительница)",
+                "«В субботу состоится школьный праздник» (объявление на двери школы)",
+              ],
+              correct: 0,
+            },
+            {
+              type: "single",
+              question: "Что нужно сделать, если ты увидел странную новость?",
+              options: [
+                "Сразу поверить и рассказать всем",
+                "Проверить новость в других местах или спросить у взрослого",
+                "Написать гневный комментарий",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question:
+                "В чате класса написали: «Ура! Завтра каникулы на неделю раньше!» Что ты сделаешь?",
+              options: [
+                "Сразу начну радоваться",
+                "Спрошу у учителя, правда ли это",
+                "Напишу в чате: «Всегда мечтал об этом!»",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question:
+                "Верно ли утверждение: «Если новость очень громкая и страшная — скорее всего, это фейк»?",
+              options: ["Да", "Нет"],
+              correct: 0,
+            },
+            {
+              type: "multiple",
+              question: "Отметь все признаки фейковой новости:",
+              options: [
+                "Новость опубликована на неизвестном сайте",
+                "В новости много восклицательных знаков",
+                "Новость подтверждают учителя и родители",
+                "Автор новости — твой одноклассник",
+                "Новость заставляет сильно испугаться или обрадоваться",
+              ],
+              correct: [0, 1, 4],
+            },
+          ],
+        },
+        3: {
+          name: "Стоп-мошенники",
+          tasks: [
+            {
+              type: "single",
+              question:
+                "В каком случае нужно насторожиться и заподозрить мошенников?",
+              options: [
+                "Звонит мама",
+                "Звонит друг",
+                "Звонит незнакомец и говорит: «Вы выиграли приз, назовите пароль»",
+              ],
+              correct: 2,
+            },
+            {
+              type: "single",
+              question:
+                "Что делать, если незнакомец в игре просит твой номер телефона?",
+              options: [
+                "Дать номер — он же милый",
+                "Сказать «нет» и сообщить родителям",
+                "Попросить взамен его номер",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question:
+                "Звонит якобы из банка и говорит: «Ваша карта заблокирована, скажите код из СМС». Что ты сделаешь?",
+              options: [
+                "Скажу код — нужно спасать карту",
+                "Положу трубку и скажу родителям",
+                "Попрошу перезвонить позже",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question:
+                "Верно ли утверждение: «Если звонят и говорят о выигрыше, но просят назвать пароль — это мошенники»?",
+              options: ["Да", "Нет"],
+              correct: 0,
+            },
+            {
+              type: "multiple",
+              question: "Отметь все признаки мошенников:",
+              options: [
+                "Просят назвать пароль",
+                "Говорят, что вы выиграли приз",
+                "Просят перевести деньги",
+                "Называют тебя по имени",
+                "Предлагают бесплатные скины в игре",
+              ],
+              correct: [0, 1, 2, 4],
+            },
+          ],
+        },
+        4: {
+          name: "Хранители личных данных",
+          tasks: [
+            {
+              type: "single",
+              question: "Что нельзя публиковать в интернете?",
+              options: [
+                "Фото с котом",
+                "Домашний адрес",
+                "Рисунок, который нарисовал сам",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question: "Что такое личные данные?",
+              options: [
+                "Информация, которую можно рассказывать всем",
+                "Информация о тебе, которую нельзя разглашать (адрес, телефон, пароль)",
+                "Список твоих любимых игр",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question:
+                "В комментариях к твоему фото спрашивают: «В какой школе ты учишься? В каком классе?» Что ты сделаешь?",
+              options: [
+                "Напишу: «Школа № 1, 2 класс»",
+                "Не буду отвечать на такие вопросы",
+                "Напишу название другой школы",
+              ],
+              correct: 1,
+            },
+            {
+              type: "single",
+              question:
+                "Верно ли утверждение: «Номер телефона нельзя давать незнакомцам»?",
+              options: ["Да", "Нет"],
+              correct: 0,
+            },
+            {
+              type: "multiple",
+              question: "Отметь, какие данные нельзя публиковать в интернете:",
+              options: [
+                "Домашний адрес",
+                "Любимый цвет",
+                "Номер телефона",
+                "Фотографию с подписью «моя школа №...»",
+                "Пароль от аккаунта",
+                "Какую кашу ты ел на завтрак",
+              ],
+              correct: [0, 2, 3, 4],
+            },
+          ],
+        },
+      };
+
+      const teamIndex = parseInt(localStorage.getItem("currentTeam"));
+      const teamData = questionsData[teamIndex];
+
+      if (!teamData) window.location.href = "index.html";
+
+      let currentTask =
+        parseInt(localStorage.getItem(`progress_team_${teamIndex}`)) || 0;
+      let waitingForNext = false;
+
+      // Отображаем название команды без смайла
+      document.getElementById("teamNameDisplay").textContent =
+        `${teamData.name}`;
+
+      function updateProgressBar() {
+        document.getElementById("progressFill").style.width =
+          `${(currentTask / 5) * 100}%`;
+        document.getElementById("taskCounter").textContent =
+          `Задание ${currentTask + 1} из 5`;
+      }
+
+      function saveProgress() {
+        localStorage.setItem(`progress_team_${teamIndex}`, currentTask);
+        const statuses = JSON.parse(
+          localStorage.getItem(`team_status_${teamIndex}`),
+        ) || [false, false, false, false, false];
+        for (let i = 0; i <= currentTask; i++)
+          if (i < 5 && !statuses[i]) statuses[i] = true;
+        localStorage.setItem(
+          `team_status_${teamIndex}`,
+          JSON.stringify(statuses),
+        );
+      }
+
+      function showModal(message, isCorrect, onClose) {
+        const modal = document.getElementById("modal");
+        const modalMessage = document.getElementById("modalMessage");
+        const modalSticker = document.getElementById("modalSticker");
+        const modalBtn = document.getElementById("modalBtn");
+
+        modalMessage.textContent = message;
+
+        if (isCorrect) {
+          modalSticker.src = "image4.png";
+          modalBtn.className = "btn btn-success";
+          modalBtn.textContent = "Следующее задание";
+        } else {
+          modalSticker.src = "image3.png";
+          modalBtn.className = "btn btn-warning";
+          modalBtn.textContent = "Попробовать ещё раз";
+        }
+
+        modal.style.display = "flex";
+
+        const closeHandler = () => {
+          modal.style.display = "none";
+          if (onClose) onClose();
+          modalBtn.removeEventListener("click", closeHandler);
+        };
+
+        modalBtn.addEventListener("click", closeHandler);
+      }
+
+      function renderTask() {
+        if (currentTask >= 5) {
+          showCompletionScreen();
+          return;
+        }
+
+        waitingForNext = false;
+        const task = teamData.tasks[currentTask];
+        updateProgressBar();
+
+        let html = `<div class="question-text">${task.question}</div>`;
+        html += `<div class="options-list" id="optionsList">`;
+
+        if (task.type === "single") {
+          task.options.forEach((opt, idx) => {
+            html += `<label class="option-item"><input type="radio" name="answer" value="${idx}" class="option-radio"><span class="option-text">${opt}</span></label>`;
+          });
+          html += `</div><div class="actions"><button class="btn btn-primary" id="submitBtn">Ответить</button></div>`;
+        } else {
+          task.options.forEach((opt, idx) => {
+            html += `<label class="option-item"><input type="checkbox" value="${idx}" class="option-checkbox"><span class="option-text">${opt}</span></label>`;
+          });
+          html += `</div><div class="actions"><button class="btn btn-primary" id="submitBtn" disabled>Ответить</button></div>`;
+        }
+
+        document.getElementById("gameContent").innerHTML = html;
+
+        if (task.type === "multiple") {
+          const checkboxes = document.querySelectorAll(".option-checkbox");
+          const submitBtn = document.getElementById("submitBtn");
+          const checkAnyChecked = () => {
+            submitBtn.disabled = !Array.from(checkboxes).some(
+              (cb) => cb.checked,
+            );
+          };
+          checkboxes.forEach((cb) =>
+            cb.addEventListener("change", checkAnyChecked),
+          );
+        }
+
+        document
+          .getElementById("submitBtn")
+          .addEventListener("click", () => checkAnswer());
+      }
+
+      function checkAnswer() {
+        if (waitingForNext) return;
+
+        const task = teamData.tasks[currentTask];
+        let isCorrect = false;
+
+        if (task.type === "single") {
+          const selected = document.querySelector(
+            'input[name="answer"]:checked',
+          );
+          if (!selected) {
+            showModal("Пожалуйста, выберите ответ!", false, null);
+            return;
+          }
+          isCorrect = parseInt(selected.value) === task.correct;
+        } else {
+          const checkboxes = document.querySelectorAll(".option-checkbox");
+          const selected = [];
+          checkboxes.forEach((cb, idx) => {
+            if (cb.checked) selected.push(idx);
+          });
+          const correctAnswers = task.correct;
+          isCorrect =
+            correctAnswers.every((c) => selected.includes(c)) &&
+            selected.every((s) => correctAnswers.includes(s)) &&
+            selected.length === correctAnswers.length;
+        }
+
+        if (isCorrect) {
+          showModal(
+            "Правильно! Получите у ведущего часть секретного кода.",
+            true,
+            () => {
+              waitingForNext = true;
+              currentTask++;
+              saveProgress();
+              renderTask();
+            },
+          );
+        } else {
+          showModal(
+            "Неправильно. Подумайте внимательнее и попробуйте ещё раз.",
+            false,
+            () => {
+              if (task.type === "single") {
+                document
+                  .querySelectorAll('input[name="answer"]')
+                  .forEach((r) => (r.checked = false));
+              } else {
+                document
+                  .querySelectorAll(".option-checkbox")
+                  .forEach((cb) => (cb.checked = false));
+                const submitBtn = document.getElementById("submitBtn");
+                if (submitBtn) submitBtn.disabled = true;
+              }
+            },
+          );
+        }
+      }
+
+      function showCompletionScreen() {
+        document.getElementById("gameContent").innerHTML = `
+                <div class="completion-screen">
+                    <h2 style="color: #ae91d1;">Поздравляем, ${teamData.name}!</h2>
+                    <p>Вы успешно прошли все задания.</p>
+                    <p>Теперь соберите свою фразу из полученных букв вместе с другими командами!</p>
+                    <img src="image5.png" alt="" class="completion-sticker-large">
+                </div>
+            `;
+        document.getElementById("progressFill").style.width = "100%";
+      }
+
+      renderTask();
+    </script>
+  </body>
+</html>

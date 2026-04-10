@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <title>ЦИФРАВИК — Игра по кибербезопасности</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Логотип header.jpg - увеличен -->
+      <div class="header">
+        <img src="header.jpg" alt="Логотип ЦИФРАВИК" class="logo-main" />
+      </div>
+
+      <h2>Выбери свою команду</h2>
+
+      <div
+        class="main-content"
+        style="
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 30px;
+          flex-wrap: wrap;
+        "
+      >
+        <div
+          class="team-selector"
+          id="teamSelector"
+          style="flex: 1; min-width: 250px"
+        >
+          <label class="team-option" data-team="0">
+            <input type="radio" name="team" value="0" class="team-radio" />
+            <span class="team-name">🛡️ Защитники паролей</span>
+          </label>
+          <label class="team-option" data-team="1">
+            <input type="radio" name="team" value="1" class="team-radio" />
+            <span class="team-name">🦠 Борцы с вирусами</span>
+          </label>
+          <label class="team-option" data-team="2">
+            <input type="radio" name="team" value="2" class="team-radio" />
+            <span class="team-name">🔍 Ловцы обманов</span>
+          </label>
+          <label class="team-option" data-team="3">
+            <input type="radio" name="team" value="3" class="team-radio" />
+            <span class="team-name">🚫 Стоп-мошенники</span>
+          </label>
+          <label class="team-option" data-team="4">
+            <input type="radio" name="team" value="4" class="team-radio" />
+            <span class="team-name">🔐 Хранители личных данных</span>
+          </label>
+        </div>
+
+        <!-- Стикер image1.png слева от кнопки, на одном уровне -->
+        <div style="display: flex; flex-direction: column; align-items: center">
+          <img src="image1.png" alt="" class="sticker-start" />
+          <button
+            class="btn btn-primary"
+            id="startBtn"
+            style="margin-top: 20px"
+          >
+            Начать игру
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const teamNames = [
+        "Защитники паролей",
+        "Борцы с вирусов",
+        "Ловцы обманов",
+        "Стоп-мошенники",
+        "Хранители личных данных",
+      ];
+
+      localStorage.setItem("teamNames", JSON.stringify(teamNames));
+
+      const teamOptions = document.querySelectorAll(".team-option");
+      const radios = document.querySelectorAll('input[name="team"]');
+
+      teamOptions.forEach((option) => {
+        option.addEventListener("click", (e) => {
+          if (e.target.type !== "radio") {
+            const radio = option.querySelector('input[type="radio"]');
+            radio.checked = true;
+          }
+          updateSelectedStyle();
+        });
+      });
+
+      radios.forEach((radio) => {
+        radio.addEventListener("change", updateSelectedStyle);
+      });
+
+      function updateSelectedStyle() {
+        teamOptions.forEach((opt) => opt.classList.remove("selected"));
+        const selectedRadio = document.querySelector(
+          'input[name="team"]:checked',
+        );
+        if (selectedRadio) {
+          const parent = selectedRadio.closest(".team-option");
+          parent.classList.add("selected");
+        }
+      }
+
+      document.getElementById("startBtn").addEventListener("click", () => {
+        const selected = document.querySelector('input[name="team"]:checked');
+        if (!selected) {
+          alert("Пожалуйста, выберите команду!");
+          return;
+        }
+
+        const teamIndex = parseInt(selected.value);
+        localStorage.setItem("currentTeam", teamIndex);
+        localStorage.setItem("currentTeamName", teamNames[teamIndex]);
+
+        localStorage.setItem(`progress_team_${teamIndex}`, "0");
+        localStorage.setItem(
+          `team_status_${teamIndex}`,
+          JSON.stringify([false, false, false, false, false]),
+        );
+
+        window.location.href = "game.html";
+      });
+    </script>
+  </body>
+</html>
