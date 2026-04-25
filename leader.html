@@ -1,297 +1,306 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ЦИФРАВИК — Экран ведущего</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <style>
-        .leader-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+      .leader-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
 
-            .leader-header img {
-                max-width: 300px;
-                height: auto;
-            }
+      .leader-header img {
+        max-width: 300px;
+        height: auto;
+      }
 
-        .table-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            overflow-x: auto;
-        }
+      .table-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        overflow-x: auto;
+      }
 
+      .leader-table {
+        width: auto;
+        min-width: 80%;
+        max-width: 100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+        font-size: 16px;
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+
+      .leader-table th,
+      .leader-table td {
+        border: 1px solid #ddd;
+        padding: 12px 8px;
+        text-align: center;
+        vertical-align: middle;
+      }
+
+      .leader-table th {
+        background: var(--logo-purple);
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+      }
+
+      .leader-table td {
+        font-size: 20px;
+      }
+
+      .leader-table tr:nth-child(even) {
+        background: var(--bg-purple-light);
+      }
+
+      .team-reset-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .team-reset-btn:hover {
+        background: #c0392b;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+
+      .status-done {
+        background: var(--logo-green);
+        color: #1a1a2e;
+      }
+
+      .status-progress {
+        background: var(--logo-yellow);
+        color: #1a1a2e;
+      }
+
+      .btn-code {
+        background: #95a5a6;
+        color: white;
+        padding: 12px 24px;
+        font-size: 18px;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 20px;
+      }
+
+      .btn-code.active {
+        background: #2ecc71;
+      }
+
+      .btn-code.active:hover {
+        background: #27ae60;
+      }
+
+      .code-button-wrapper {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .final-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      }
+
+      .final-modal-content {
+        background: var(--logo-white);
+        border-radius: 40px;
+        padding: 40px;
+        text-align: center;
+        max-width: 600px;
+        width: 90%;
+        border: 3px solid var(--logo-yellow);
+      }
+
+      .final-modal-content h2 {
+        color: var(--logo-purple);
+        margin-bottom: 20px;
+        font-size: 28px;
+      }
+
+      .final-modal-content input {
+        font-size: 18px;
+        padding: 15px;
+        text-align: center;
+        width: 100%;
+        margin: 20px 0;
+        border: 2px solid var(--logo-purple);
+        border-radius: 20px;
+        box-sizing: border-box;
+      }
+
+      .victory-screen {
+        text-align: center;
+      }
+
+      .victory-screen h1 {
+        color: var(--logo-purple);
+        margin-bottom: 20px;
+        font-size: 32px;
+      }
+
+      .victory-screen img {
+        max-width: 100%;
+        border-radius: 20px;
+        margin-top: 20px;
+      }
+
+      .legend {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #888;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
         .leader-table {
-            width: auto;
-            min-width: 80%;
-            max-width: 100%;
-            border-collapse: collapse;
-            margin: 0 auto;
-            font-size: 16px;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
+          min-width: 95%;
         }
 
-            .leader-table th,
-            .leader-table td {
-                border: 1px solid #ddd;
-                padding: 12px 8px;
-                text-align: center;
-                vertical-align: middle;
-            }
-
-            .leader-table th {
-                background: var(--logo-purple);
-                color: white;
-                font-weight: bold;
-                font-size: 16px;
-            }
-
-            .leader-table td {
-                font-size: 20px;
-            }
-
-            .leader-table tr:nth-child(even) {
-                background: var(--bg-purple-light);
-            }
-
-        .team-reset-btn {
-            background: #E74C3C;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
+        .leader-table th,
+        .leader-table td {
+          padding: 8px 4px;
+          font-size: 12px;
         }
 
-            .team-reset-btn:hover {
-                background: #C0392B;
-            }
-
-        .status-badge {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
+        .final-modal-content h2 {
+          font-size: 22px;
         }
-
-        .status-done {
-            background: var(--logo-green);
-            color: #1a1a2e;
-        }
-
-        .status-progress {
-            background: var(--logo-yellow);
-            color: #1a1a2e;
-        }
-
-        .btn-code {
-            background: #95A5A6;
-            color: white;
-            padding: 12px 24px;
-            font-size: 18px;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-bottom: 20px;
-        }
-
-            .btn-code.active {
-                background: #2ECC71;
-            }
-
-                .btn-code.active:hover {
-                    background: #27AE60;
-                }
-
-        .code-button-wrapper {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .final-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-
-        .final-modal-content {
-            background: var(--logo-white);
-            border-radius: 40px;
-            padding: 40px;
-            text-align: center;
-            max-width: 600px;
-            width: 90%;
-            border: 3px solid var(--logo-yellow);
-        }
-
-            .final-modal-content h2 {
-                color: var(--logo-purple);
-                margin-bottom: 20px;
-                font-size: 28px;
-            }
-
-            .final-modal-content input {
-                font-size: 18px;
-                padding: 15px;
-                text-align: center;
-                width: 100%;
-                margin: 20px 0;
-                border: 2px solid var(--logo-purple);
-                border-radius: 20px;
-                box-sizing: border-box;
-            }
-
-        .victory-screen {
-            text-align: center;
-        }
-
-            .victory-screen h1 {
-                color: var(--logo-purple);
-                margin-bottom: 20px;
-                font-size: 32px;
-            }
-
-            .victory-screen img {
-                max-width: 100%;
-                border-radius: 20px;
-                margin-top: 20px;
-            }
-
-        .legend {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #888;
-            text-align: center;
-        }
-
-        @media (max-width: 768px) {
-            .leader-table {
-                min-width: 95%;
-            }
-
-                .leader-table th,
-                .leader-table td {
-                    padding: 8px 4px;
-                    font-size: 12px;
-                }
-
-            .final-modal-content h2 {
-                font-size: 22px;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="leader-container">
-        <div class="leader-header">
-            <img src="header.jpg" alt="Логотип ЦИФРАВИК" style="max-width: 300px;">
-        </div>
+      <div class="leader-header">
+        <img src="header.jpg" alt="Логотип ЦИФРАВИК" style="max-width: 300px" />
+      </div>
 
-        <div class="code-button-wrapper">
-            <button id="showCodeBtn" class="btn-code">🔐 Ввести шифр</button>
-        </div>
+      <div class="code-button-wrapper">
+        <button id="showCodeBtn" class="btn-code">🔐 Ввести шифр</button>
+      </div>
 
-        <div class="table-wrapper">
-            <table class="leader-table">
-                <thead>
-                    <tr>
-                        <th>Команда</th>
-                        <th>Задание 1</th>
-                        <th>Задание 2</th>
-                        <th>Задание 3</th>
-                        <th>Задание 4</th>
-                        <th>Задание 5</th>
-                        <th>Статус</th>
-                        <th>Действие</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-        </div>
+      <div class="table-wrapper">
+        <table class="leader-table">
+          <thead>
+            <tr>
+              <th>Команда</th>
+              <th>Задание 1</th>
+              <th>Задание 2</th>
+              <th>Задание 3</th>
+              <th>Задание 4</th>
+              <th>Задание 5</th>
+              <th>Статус</th>
+              <th>Действие</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
 
-        <div class="legend">
-            ✅ — задание выполнено &nbsp;&nbsp;|&nbsp;&nbsp;
-            ⏳ — задание в процессе &nbsp;&nbsp;|&nbsp;&nbsp;
-            ❌ — задание не выполнено<br>
-            Нажмите на статус задания, чтобы изменить его вручную
-        </div>
+      <div class="legend">
+        ✅ — задание выполнено &nbsp;&nbsp;|&nbsp;&nbsp; ⏳ — задание в процессе
+        &nbsp;&nbsp;|&nbsp;&nbsp; ❌ — задание не выполнено<br />
+        Нажмите на статус задания, чтобы изменить его вручную
+      </div>
     </div>
 
     <div id="finalModal" class="final-modal">
-        <div class="final-modal-content" id="finalModalContent"></div>
+      <div class="final-modal-content" id="finalModalContent"></div>
     </div>
 
     <script>
-        const teamNames = JSON.parse(localStorage.getItem('teamNames')) || [
-            "Защитники паролей", "Борцы с вирусами", "Ловцы обманов", "Стоп-мошенники", "Хранители личных данных"
-        ];
+      const teamNames = JSON.parse(localStorage.getItem("teamNames")) || [
+        "Защитники паролей",
+        "Борцы с вирусами",
+        "Ловцы обманов",
+        "Стоп-мошенники",
+        "Хранители личных данных",
+      ];
 
-        // СЕКРЕТНЫЙ ШИФР
-        const SECRET_CODE = "Дружим с кибербезопасностью";
+      // СЕКРЕТНЫЙ ШИФР
+      const SECRET_CODE = "Дружим с кибербезопасностью";
 
-        let allCompletedFlag = false;
+      let allCompletedFlag = false;
 
-        function getTeamStatus(teamIndex) {
-            const saved = localStorage.getItem(`team_status_${teamIndex}`);
-            return saved ? JSON.parse(saved) : [false, false, false, false, false];
+      function getTeamStatus(teamIndex) {
+        const saved = localStorage.getItem(`team_status_${teamIndex}`);
+        return saved ? JSON.parse(saved) : [false, false, false, false, false];
+      }
+
+      function setTeamStatus(teamIndex, statuses) {
+        localStorage.setItem(
+          `team_status_${teamIndex}`,
+          JSON.stringify(statuses),
+        );
+        let progress = 0;
+        for (let i = 0; i < statuses.length; i++) {
+          if (statuses[i]) progress = i + 1;
+          else break;
+        }
+        localStorage.setItem(`progress_team_${teamIndex}`, progress);
+        renderTable();
+        checkAllTeamsCompleted();
+      }
+
+      function setSingleTaskStatus(teamIdx, taskNum, completed) {
+        const statuses = getTeamStatus(teamIdx);
+        statuses[taskNum] = completed;
+        setTeamStatus(teamIdx, statuses);
+      }
+
+      function checkAllTeamsCompleted() {
+        let allDone = true;
+        for (let t = 0; t < 5; t++) {
+          const statuses = getTeamStatus(t);
+          const allCompleted = statuses.every((s) => s === true);
+          if (!allCompleted) {
+            allDone = false;
+            break;
+          }
         }
 
-        function setTeamStatus(teamIndex, statuses) {
-            localStorage.setItem(`team_status_${teamIndex}`, JSON.stringify(statuses));
-            let progress = 0;
-            for (let i = 0; i < statuses.length; i++) {
-                if (statuses[i]) progress = i + 1;
-                else break;
-            }
-            localStorage.setItem(`progress_team_${teamIndex}`, progress);
-            renderTable();
-            checkAllTeamsCompleted();
+        const codeBtn = document.getElementById("showCodeBtn");
+        if (allDone && !allCompletedFlag) {
+          allCompletedFlag = true;
+          if (codeBtn) codeBtn.classList.add("active");
+        } else if (!allDone) {
+          allCompletedFlag = false;
+          if (codeBtn) codeBtn.classList.remove("active");
         }
+      }
 
-        function setSingleTaskStatus(teamIdx, taskNum, completed) {
-            const statuses = getTeamStatus(teamIdx);
-            statuses[taskNum] = completed;
-            setTeamStatus(teamIdx, statuses);
-        }
+      function showFinalCodeModal() {
+        const modal = document.getElementById("finalModal");
+        const modalContent = document.getElementById("finalModalContent");
 
-        function checkAllTeamsCompleted() {
-            let allDone = true;
-            for (let t = 0; t < 5; t++) {
-                const statuses = getTeamStatus(t);
-                const allCompleted = statuses.every(s => s === true);
-                if (!allCompleted) { allDone = false; break; }
-            }
-
-            const codeBtn = document.getElementById('showCodeBtn');
-            if (allDone && !allCompletedFlag) {
-                allCompletedFlag = true;
-                if (codeBtn) codeBtn.classList.add('active');
-            } else if (!allDone) {
-                allCompletedFlag = false;
-                if (codeBtn) codeBtn.classList.remove('active');
-            }
-        }
-
-        function showFinalCodeModal() {
-            const modal = document.getElementById('finalModal');
-            const modalContent = document.getElementById('finalModalContent');
-
-            modalContent.innerHTML = `
+        modalContent.innerHTML = `
                     <h2>Все команды прошли испытания!</h2>
                     <p>Введите секретный шифр, чтобы завершить игру:</p>
                     <input type="text" id="secretInput" placeholder="Введите шифр" style="font-size: 18px; width: 100%;" autocomplete="off">
@@ -300,117 +309,132 @@
                     <button id="closeModalBtn" class="btn btn-secondary" style="margin: 10px;">Закрыть</button>
                 `;
 
-            modal.style.display = 'flex';
+        modal.style.display = "flex";
 
-            document.getElementById('submitCodeBtn').addEventListener('click', () => {
-                const input = document.getElementById('secretInput').value;
-                if (input === SECRET_CODE) {
-                    showVictoryScreen();
-                } else {
-                    alert('Неверный шифр! Попробуйте ещё раз.');
-                }
-            });
+        document
+          .getElementById("submitCodeBtn")
+          .addEventListener("click", () => {
+            const input = document.getElementById("secretInput").value;
+            if (input === SECRET_CODE) {
+              showVictoryScreen();
+            } else {
+              alert("Неверный шифр! Попробуйте ещё раз.");
+            }
+          });
 
-            document.getElementById('closeModalBtn').addEventListener('click', () => {
-                modal.style.display = 'none';
-            });
-        }
+        document
+          .getElementById("closeModalBtn")
+          .addEventListener("click", () => {
+            modal.style.display = "none";
+          });
+      }
 
-        function showVictoryScreen() {
-            const modalContent = document.getElementById('finalModalContent');
-            modalContent.innerHTML = `
+      function showVictoryScreen() {
+        const modalContent = document.getElementById("finalModalContent");
+        modalContent.innerHTML = `
                     <div class="victory-screen">
                         <h1>🌟 Цифроград спасён! 🌟</h1>
-                        <img src="header2.jpg" alt="Цифроград спасён">
+                        <img src="header2.jpg" alt="Цифраград спасён">
                         <p style="margin-top: 20px;">Спасибо за игру, юные защитники кибербезопасности!</p>
                         <button id="closeVictoryBtn" class="btn btn-primary">Закрыть</button>
                     </div>
                 `;
 
-            document.getElementById('closeVictoryBtn').addEventListener('click', () => {
-                document.getElementById('finalModal').style.display = 'none';
-            });
-        }
+        document
+          .getElementById("closeVictoryBtn")
+          .addEventListener("click", () => {
+            document.getElementById("finalModal").style.display = "none";
+          });
+      }
 
-        function renderTable() {
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
+      function renderTable() {
+        const tbody = document.getElementById("tableBody");
+        tbody.innerHTML = "";
 
-            for (let t = 0; t < 5; t++) {
-                const statuses = getTeamStatus(t);
-                const progress = localStorage.getItem(`progress_team_${t}`) || 0;
-                const allCompleted = statuses.every(s => s === true);
+        for (let t = 0; t < 5; t++) {
+          const statuses = getTeamStatus(t);
+          const progress = localStorage.getItem(`progress_team_${t}`) || 0;
+          const allCompleted = statuses.every((s) => s === true);
 
-                const row = tbody.insertRow();
+          const row = tbody.insertRow();
 
-                // Название команды
-                const cellTeam = row.insertCell(0);
-                cellTeam.textContent = teamNames[t];
-                cellTeam.style.fontWeight = 'bold';
+          // Название команды
+          const cellTeam = row.insertCell(0);
+          cellTeam.textContent = teamNames[t];
+          cellTeam.style.fontWeight = "bold";
 
-                // Задания 1-5
-                for (let task = 0; task < 5; task++) {
-                    const cell = row.insertCell(task + 1);
-                    let icon = '';
-                    if (statuses[task] === true) {
-                        icon = '✅';
-                    } else if (progress > task || (progress === 5 && task < 5)) {
-                        icon = '✅';
-                    } else if (progress === task) {
-                        icon = '⏳';
-                    } else {
-                        icon = '❌';
-                    }
-                    cell.textContent = icon;
-                    cell.style.fontSize = '24px';
-                    cell.style.cursor = 'pointer';
-                    cell.title = 'Нажмите, чтобы изменить статус';
-                    cell.onclick = (function (teamIdx, taskNum) {
-                        return function () { toggleTaskStatus(teamIdx, taskNum); };
-                    })(t, task);
-                }
-
-                // Статус
-                const cellStatus = row.insertCell(6);
-                const statusText = allCompleted ? 'Готово 🎉' : 'В процессе ⏳';
-                const statusClass = allCompleted ? 'status-done' : 'status-progress';
-                cellStatus.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
-
-                // Действие (кнопка сброса)
-                const cellAction = row.insertCell(7);
-                const resetBtn = document.createElement('button');
-                resetBtn.textContent = 'Сбросить';
-                resetBtn.className = 'team-reset-btn';
-                resetBtn.onclick = (function (teamIdx) {
-                    return function () { resetTeamProgress(teamIdx); };
-                })(t);
-                cellAction.appendChild(resetBtn);
-            }
-        }
-
-        function resetTeamProgress(teamIdx) {
-            if (confirm(`Сбросить прогресс команды "${teamNames[teamIdx]}"?`)) {
-                setTeamStatus(teamIdx, [false, false, false, false, false]);
-            }
-        }
-
-        window.toggleTaskStatus = function (teamIdx, taskNum) {
-            const currentStatus = getTeamStatus(teamIdx)[taskNum];
-            const newStatus = !currentStatus;
-            setSingleTaskStatus(teamIdx, taskNum, newStatus);
-        };
-
-        document.getElementById('showCodeBtn').addEventListener('click', () => {
-            if (allCompletedFlag) {
-                showFinalCodeModal();
+          // Задания 1-5
+          for (let task = 0; task < 5; task++) {
+            const cell = row.insertCell(task + 1);
+            let icon = "";
+            if (statuses[task] === true) {
+              icon = "✅";
+            } else if (progress > task || (progress === 5 && task < 5)) {
+              icon = "✅";
+            } else if (progress === task) {
+              icon = "⏳";
             } else {
-                alert('Не все команды прошли все задания! Дождитесь, пока все команды справятся.');
+              icon = "❌";
             }
-        });
+            cell.textContent = icon;
+            cell.style.fontSize = "24px";
+            cell.style.cursor = "pointer";
+            cell.title = "Нажмите, чтобы изменить статус";
+            cell.onclick = (function (teamIdx, taskNum) {
+              return function () {
+                toggleTaskStatus(teamIdx, taskNum);
+              };
+            })(t, task);
+          }
 
+          // Статус
+          const cellStatus = row.insertCell(6);
+          const statusText = allCompleted ? "Готово 🎉" : "В процессе ⏳";
+          const statusClass = allCompleted ? "status-done" : "status-progress";
+          cellStatus.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
+
+          // Действие (кнопка сброса)
+          const cellAction = row.insertCell(7);
+          const resetBtn = document.createElement("button");
+          resetBtn.textContent = "Сбросить";
+          resetBtn.className = "team-reset-btn";
+          resetBtn.onclick = (function (teamIdx) {
+            return function () {
+              resetTeamProgress(teamIdx);
+            };
+          })(t);
+          cellAction.appendChild(resetBtn);
+        }
+      }
+
+      function resetTeamProgress(teamIdx) {
+        if (confirm(`Сбросить прогресс команды "${teamNames[teamIdx]}"?`)) {
+          setTeamStatus(teamIdx, [false, false, false, false, false]);
+        }
+      }
+
+      window.toggleTaskStatus = function (teamIdx, taskNum) {
+        const currentStatus = getTeamStatus(teamIdx)[taskNum];
+        const newStatus = !currentStatus;
+        setSingleTaskStatus(teamIdx, taskNum, newStatus);
+      };
+
+      document.getElementById("showCodeBtn").addEventListener("click", () => {
+        if (allCompletedFlag) {
+          showFinalCodeModal();
+        } else {
+          alert(
+            "Не все команды прошли все задания! Дождитесь, пока все команды справятся.",
+          );
+        }
+      });
+
+      renderTable();
+      setInterval(() => {
         renderTable();
-        setInterval(() => { renderTable(); checkAllTeamsCompleted(); }, 5000);
         checkAllTeamsCompleted();
+      }, 5000);
+      checkAllTeamsCompleted();
     </script>
-</body>
+  </body>
 </html>
