@@ -6,13 +6,34 @@
     <title>ЦИФРАВИК — Экран ведущего</title>
     <link rel="stylesheet" href="style.css" />
     <style>
+      /* Дополнительные стили для устранения белых полей снизу */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: white;
+      }
+
+      .leader-container {
+        padding-bottom: 40px;
+        background: white;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+
+      .table-wrapper {
+        margin-bottom: 20px;
+      }
+
       .leader-header {
         text-align: center;
         margin-bottom: 30px;
       }
 
       .leader-header img {
-        max-width: 300px;
+        max-width: 600px;
+        width: 100%;
         height: auto;
       }
 
@@ -34,6 +55,7 @@
         background: white;
         border-radius: 20px;
         overflow: hidden;
+        margin-bottom: 0;
       }
 
       .leader-table th,
@@ -193,13 +215,17 @@
         .final-modal-content h2 {
           font-size: 22px;
         }
+
+        .leader-header img {
+          max-width: 300px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="leader-container">
       <div class="leader-header">
-        <img src="header.jpg" alt="Логотип ЦИФРАВИК" style="max-width: 300px" />
+        <img src="header.jpg" alt="Логотип ЦИФРАВИК" />
       </div>
 
       <div class="code-button-wrapper">
@@ -244,8 +270,18 @@
         "Хранители личных данных",
       ];
 
-      // СЕКРЕТНЫЙ ШИФР
-      const SECRET_CODE = "Мы за безопасный интернет";
+      // ========== УНИВЕРСАЛЬНАЯ ПРОВЕРКА ФРАЗЫ (любой регистр) ==========
+      function isSecretCodeValid(input) {
+        // Приводим к нижнему регистру и нормализуем пробелы
+        const normalized = input.toLowerCase().replace(/\s+/g, " ").trim();
+
+        const validPhrases = [
+          "мы за безопасный интернет",
+          "дружим с кибербезопасностью",
+        ];
+
+        return validPhrases.includes(normalized);
+      }
 
       let allCompletedFlag = false;
 
@@ -315,7 +351,7 @@
           .getElementById("submitCodeBtn")
           .addEventListener("click", () => {
             const input = document.getElementById("secretInput").value;
-            if (input === SECRET_CODE) {
+            if (isSecretCodeValid(input)) {
               showVictoryScreen();
             } else {
               alert("Неверный шифр! Попробуйте ещё раз.");
@@ -358,12 +394,10 @@
 
           const row = tbody.insertRow();
 
-          // Название команды
           const cellTeam = row.insertCell(0);
           cellTeam.textContent = teamNames[t];
           cellTeam.style.fontWeight = "bold";
 
-          // Задания 1-5
           for (let task = 0; task < 5; task++) {
             const cell = row.insertCell(task + 1);
             let icon = "";
@@ -387,13 +421,11 @@
             })(t, task);
           }
 
-          // Статус
           const cellStatus = row.insertCell(6);
           const statusText = allCompleted ? "Готово 🎉" : "В процессе ⏳";
           const statusClass = allCompleted ? "status-done" : "status-progress";
           cellStatus.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
 
-          // Действие (кнопка сброса)
           const cellAction = row.insertCell(7);
           const resetBtn = document.createElement("button");
           resetBtn.textContent = "Сбросить";

@@ -11,7 +11,6 @@
   </head>
   <body>
     <div class="game-container" style="position: relative; overflow: visible">
-      <!-- Логотип name.png - увеличен в 2 раза -->
       <div class="header">
         <img src="name.png" alt="ЦИФРАВИК" class="logo-game" />
       </div>
@@ -25,11 +24,8 @@
       </div>
 
       <div id="gameContent"></div>
-
-      <!-- Стикер image2.png - УДАЛЁН по требованию -->
     </div>
 
-    <!-- Модальное окно -->
     <div id="modal" class="modal">
       <div class="modal-content" style="position: relative">
         <p id="modalMessage"></p>
@@ -66,7 +62,7 @@
                 "Друг просит дать ему твой пароль от игры, чтобы пройти сложный уровень. Что ты сделаешь?",
               options: [
                 "Дам пароль — он же друг",
-                "Скажу: «Не могу, пароль никому нельзя давать»",
+                "Скажу: «Не могу, пароль никому, кроме родителей, нельзя давать»",
                 "Напишу пароль на бумажке и отдам",
               ],
               correct: 1,
@@ -82,7 +78,7 @@
               type: "multiple",
               question: "Отметь все правильные правила защиты паролей:",
               options: [
-                "Пароль должен знать только ты",
+                "Пароль должен знать только ты и твои родители",
                 "Пароль можно сообщать друзьям",
                 "Хороший пароль содержит буквы, цифры и символы",
                 "Пароль 123456 — очень надёжный",
@@ -141,7 +137,7 @@
                 "Нельзя открывать подозрительные ссылки",
                 "На компьютере должен быть антивирус",
                 "Если пришло письмо от незнакомца с файлом — открой скорее",
-                "Обновлять программы нужно, когда просит антивирус",
+                "Нужно вовремя обновлять антивирус, чтобы он мог защищать от новых вирусов",
               ],
               correct: [1, 2, 4],
             },
@@ -192,13 +188,13 @@
               type: "multiple",
               question: "Отметь все признаки фейковой новости:",
               options: [
-                "Новость опубликована на неизвестном сайте",
-                "В новости много восклицательных знаков",
-                "Новость подтверждают учителя и родители",
-                "Автор новости — твой одноклассник",
-                "Новость заставляет сильно испугаться или обрадоваться",
+                "Новость написана не тем, кого ты знаешь, а каким-то чужим человеком",
+                "В новости описано что-то очень страшное, но нигде больше об этом не написано",
+                "Новость пытается тебя напугать или слишком сильно обрадовать",
+                "Новость написана твоим учителем или родителями",
+                "Новость похожа на те, которые ты привык видеть на знакомом сайте",
               ],
-              correct: [0, 1, 4],
+              correct: [0, 1, 2],
             },
           ],
         },
@@ -316,6 +312,7 @@
           ],
         },
       };
+      // ----------------------------------------------------------------
 
       const teamIndex = parseInt(localStorage.getItem("currentTeam"));
       const teamData = questionsData[teamIndex];
@@ -326,7 +323,6 @@
         parseInt(localStorage.getItem(`progress_team_${teamIndex}`)) || 0;
       let waitingForNext = false;
 
-      // Отображаем название команды без смайла
       document.getElementById("teamNameDisplay").textContent =
         `${teamData.name}`;
 
@@ -350,7 +346,7 @@
         );
       }
 
-      function showModal(message, isCorrect, onClose) {
+      function showModal(message, isCorrect, onClose, isLastTask = false) {
         const modal = document.getElementById("modal");
         const modalMessage = document.getElementById("modalMessage");
         const modalSticker = document.getElementById("modalSticker");
@@ -361,7 +357,13 @@
         if (isCorrect) {
           modalSticker.src = "image4.png";
           modalBtn.className = "btn btn-success";
-          modalBtn.textContent = "Следующее задание";
+
+          // Изменяем текст кнопки, если это последнее задание
+          if (isLastTask) {
+            modalBtn.textContent = "Завершить";
+          } else {
+            modalBtn.textContent = "Следующее задание";
+          }
         } else {
           modalSticker.src = "image3.png";
           modalBtn.className = "btn btn-warning";
@@ -375,7 +377,6 @@
           if (onClose) onClose();
           modalBtn.removeEventListener("click", closeHandler);
         };
-
         modalBtn.addEventListener("click", closeHandler);
       }
 
@@ -387,6 +388,7 @@
 
         waitingForNext = false;
         const task = teamData.tasks[currentTask];
+        const isLast = currentTask === 4;
         updateProgressBar();
 
         let html = `<div class="question-text">${task.question}</div>`;
@@ -421,10 +423,10 @@
 
         document
           .getElementById("submitBtn")
-          .addEventListener("click", () => checkAnswer());
+          .addEventListener("click", () => checkAnswer(isLast));
       }
 
-      function checkAnswer() {
+      function checkAnswer(isLastTask) {
         if (waitingForNext) return;
 
         const task = teamData.tasks[currentTask];
@@ -435,7 +437,7 @@
             'input[name="answer"]:checked',
           );
           if (!selected) {
-            showModal("Пожалуйста, выберите ответ!", false, null);
+            showModal("Пожалуйста, выберите ответ!", false, null, false);
             return;
           }
           isCorrect = parseInt(selected.value) === task.correct;
@@ -460,8 +462,14 @@
               waitingForNext = true;
               currentTask++;
               saveProgress();
-              renderTask();
+              if (currentTask === 5) {
+                // Если это было последнее задание, показываем финальный экран вместо следующего задания
+                showCompletionScreen();
+              } else {
+                renderTask();
+              }
             },
+            isLastTask,
           );
         } else {
           showModal(
@@ -480,19 +488,20 @@
                 if (submitBtn) submitBtn.disabled = true;
               }
             },
+            false,
           );
         }
       }
 
       function showCompletionScreen() {
         document.getElementById("gameContent").innerHTML = `
-                <div class="completion-screen">
-                    <h2 style="color: #ae91d1;">Поздравляем, ${teamData.name}!</h2>
-                    <p>Вы успешно прошли все задания.</p>
-                    <p>Теперь соберите свою фразу из полученных букв вместе с другими командами!</p>
-                    <img src="image5.png" alt="" class="completion-sticker-large">
-                </div>
-            `;
+          <div class="completion-screen">
+            <h2 style="color: #ae91d1;">Поздравляем, ${teamData.name}!</h2>
+            <p>Вы успешно прошли все задания.</p>
+            <p>Теперь соберите свою фразу из полученных букв вместе с другими командами!</p>
+            <img src="image5.png" alt="" class="completion-sticker-large">
+          </div>
+        `;
         document.getElementById("progressFill").style.width = "100%";
       }
 
