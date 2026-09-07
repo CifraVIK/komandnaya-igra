@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ЦИФРАВИК — Экран ведущего</title>
+    <title>цифраВИК — Экран ведущего</title>
     <link rel="stylesheet" href="style.css" />
     <style>
       /* Дополнительные стили для устранения белых полей снизу */
@@ -366,22 +366,24 @@
       }
 
       function showVictoryScreen() {
-        const modalContent = document.getElementById("finalModalContent");
-        modalContent.innerHTML = `
-                    <div class="victory-screen">
-                        <h1>🌟 Цифроград спасён! 🌟</h1>
-                        <img src="header2.jpg" alt="Цифраград спасён">
-                        <p style="margin-top: 20px;">Спасибо за игру, юные защитники!</p>
-                        <button id="closeVictoryBtn" class="btn btn-primary">Закрыть</button>
-                    </div>
-                `;
+  const modalContent = document.getElementById("finalModalContent");
+  modalContent.innerHTML = `
+    <div class="victory-screen">
+      <h1 style="font-size: 34px; color: #4a1a6b; margin-bottom: 10px;">🌟 Цифроград спасён! 🌟</h1>
+      <img src="header2.jpg" alt="Цифраград спасён" style="max-width: 100%; border-radius: 16px;">
+      <p style="font-size: 30px; font-weight: 600; color: #4a1a6b; margin-top: 25px; letter-spacing: 0.5px;">
+        Спасибо за игру, юные защитники!
+      </p>
+      <button id="closeVictoryBtn" class="btn btn-primary" style="font-size: 18px; padding: 12px 40px; margin-top: 20px; border-radius: 30px; background: #ae91d1; border: none; color: white; cursor: pointer;">
+        Закрыть
+      </button>
+    </div>
+  `;
 
-        document
-          .getElementById("closeVictoryBtn")
-          .addEventListener("click", () => {
-            document.getElementById("finalModal").style.display = "none";
-          });
-      }
+  document.getElementById("closeVictoryBtn").addEventListener("click", () => {
+    document.getElementById("finalModal").style.display = "none";
+  });
+}
 
       function renderTable() {
         const tbody = document.getElementById("tableBody");
@@ -456,7 +458,7 @@
           showFinalCodeModal();
         } else {
           alert(
-            "Не все команды прошли все задания! Дождитесь, пока все команды справятся.",
+            "Не все команды выполнили задания! Дождитесь, пока все команды справятся.",
           );
         }
       });
